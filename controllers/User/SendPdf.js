@@ -1,15 +1,12 @@
-const { PDFDocument, rgb, degrees } = require("pdf-lib");
 const pdfMODel = require("../../models/Pdf");
-const PurchesModel = require("../../models/Purchase");
 const axios = require("axios");
-const fs = require("fs");
-const path = require("path");
+const { PDFDocument, rgb, degrees } = require("pdf-lib");
+
 const sendPdf = async (req, res) => {
     const { ID } = req.body;
 
     try {
         const selectedPdf = await pdfMODel.findById(ID);
-        console.log(selectedPdf);
         if (!selectedPdf) {
             return res.status(404).json({ message: "No PDFs found" });
         }
@@ -17,14 +14,13 @@ const sendPdf = async (req, res) => {
         if (selectedPdf.price !== 0) {
             return res.status(400).json({ message: "This PDF is not free" });
         }
+
         const response = await axios.get(selectedPdf.fileUrl, {
-            responseType: "arraybuffer", // Ensure binary format
+            responseType: "arraybuffer",
         });
-        const pdfBytes = response.data
+        const pdfBytes = response.data;
+
         const pdfDoc = await PDFDocument.load(pdfBytes);
-        pdfDoc.setAuthor("ASIF");
-        pdfDoc.setProducer("MD Asif Hossain");
-        pdfDoc.setSubject(selectedPdf.title);
 
         const pages = pdfDoc.getPages();
         if (pages.length === 0) {
@@ -42,10 +38,10 @@ const sendPdf = async (req, res) => {
                 rotate: degrees(30),
             });
             page.drawText(`${req.userID}`, {
-                x: 2,
-                y: 2,
+                x: 4,
+                y: 4,
                 size: 10,
-                color: rgb(0, 0, 0),
+                color: rgb(0.2, 0, 0),
                 opacity: 0.3,
             });
         });
@@ -54,10 +50,20 @@ const sendPdf = async (req, res) => {
 
         const base64Pdf = Buffer.from(finalPdfBytes).toString("base64");
 
+        const imageUrl = selectedPdf.fileUrl
+            .replace("/upload/", "/upload/pg_1,c_thumb/")
+            .replace(".pdf", ".jpeg");
+
+        const ThubnellResponse = await axios.get(imageUrl, {
+            responseType: "arraybuffer",
+        });
+        const base64Img = Buffer.from(ThubnellResponse.data).toString("base64");
+
         res.json({
-            message: "PDF processed successfully",
-            pdf: base64Pdf, 
+            pdf: base64Pdf,
             ID,
+            Title: selectedPdf.title,
+            Thubnell: base64Img,
         });
     } catch (error) {
         console.error("❌ Error processing PDF:", error);
