@@ -20,7 +20,7 @@ app.use(
 
 app.use(
     cors({
-        origin: ["http://localhost:5173"],
+        origin: process.env.FRONTEND_URL,
         credentials: true,
     })
 );
@@ -29,7 +29,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api", Router);
 
 mongoose
-    .connect("mongodb://127.0.0.1:27017/pdf_store", {
+    .connect(process.env.MONGODB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })

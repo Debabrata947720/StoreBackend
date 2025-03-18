@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { setValue } = require("../../config/redis");
-const Sendmail = require("../../config/mail");
+const { sendVerificationEmail } = require("../../config/mail");
 const Login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -29,7 +29,7 @@ const Login = async (req, res) => {
         if (!user.isAdmin) {
             const token = jwt.sign(
                 { userId: user._id },
-                process.env.JWT_AUTH_SECRET,
+                process.env.JWT_AUTH_SECRET
             );
             res.cookie("AuthToken", token, {
                 httpOnly: true,
@@ -48,13 +48,15 @@ const Login = async (req, res) => {
 
         const r = await setValue(`Admin:OTP${user._id}`, Code, 60 * 60);
 
-        const response = await Sendmail(
-            user.email,
-            user.username,
-            Code,
-            "http://localhost:3000/admin/verify"
-        );
-        console.log(response);
+        // const response = await sendVerificationEmail(
+        //     user.email,
+        //     user.username,
+        //     Code,
+        //     `${process.env.FRONTEND_URL}/admin/verify`
+        // );
+        // if (!response) {
+        //     return res.status(500).json({ message: "Unable To Send Mail" });
+        // }
         await setValue(`Admin${user._id}`, SesonKey, 60 * 60);
 
         // Set admin cookie and send response

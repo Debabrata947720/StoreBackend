@@ -7,6 +7,8 @@ dotenv.config();
 const redis = new Redis({
     host: process.env.REDIS_HOST || "127.0.0.1",
     port: process.env.REDIS_PORT || 6379,
+    password: process.env.REDIS_PASSWORD || undefined, // Only use password if set
+    tls: process.env.REDIS_TLS ? {} : undefined, // Enable TLS only for Redis Cloud
 });
 
 // Event listeners
