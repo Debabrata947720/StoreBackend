@@ -27,8 +27,6 @@ const verifyAdmin =async (req, res, next) => {
         req.admin = {
             userId: decoded.userId,
         };
-
-        // Proceed to the next middleware or route
         next();
     } catch (error) {
         console.error("Admin token verification error:", error);
