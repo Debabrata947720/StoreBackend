@@ -48,15 +48,15 @@ const Login = async (req, res) => {
 
         const r = await setValue(`Admin:OTP${user._id}`, Code, 60 * 60);
 
-        // const response = await sendVerificationEmail(
-        //     user.email,
-        //     user.username,
-        //     Code,
-        //     `${process.env.FRONTEND_URL}/admin/verify`
-        // );
-        // if (!response) {
-        //     return res.status(500).json({ message: "Unable To Send Mail" });
-        // }
+        const response = await sendVerificationEmail(
+            user.email,
+            user.username,
+            Code,
+            `${process.env.FRONTEND_URL}/admin/verify`
+        );
+        if (!response) {
+            return res.status(500).json({ message: "Unable To Send Mail" });
+        }
         await setValue(`Admin${user._id}`, SesonKey, 60 * 60);
 
         // Set admin cookie and send response
