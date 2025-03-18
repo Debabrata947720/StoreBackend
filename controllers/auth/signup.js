@@ -49,11 +49,6 @@ const signup = async (req, res) => {
                 expiresIn: "10h",
             }
         );
-        res.cookie("Verification", token, {
-            httpOnly: true,
-            secure: true,
-        });
-
         res.status(200)
             .cookie("Verification", token, {
                 httpOnly: true,

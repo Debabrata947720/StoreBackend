@@ -10,11 +10,8 @@ const verifyAdmin =async (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(
-            AdminToken,
-            process.env.JWT_ADMIN_TOKEN_verify
-        );
-        // Check if the token contains the required admin data
+        const decoded = jwt.verify(AdminToken, process.env.JWT_ADMIN_TOKEN_verify);
+        console.log(decoded);
         if (!decoded.userId || !decoded.ss) {
             return res
                 .status(403)
