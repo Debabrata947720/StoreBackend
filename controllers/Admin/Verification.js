@@ -56,7 +56,6 @@ const Verify = async (req, res) => {
         res.cookie("AuthToken", authToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "strict",
         })
             .cookie("AdminToken", adminToken, {
                 httpOnly: true,
