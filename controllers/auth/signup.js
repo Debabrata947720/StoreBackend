@@ -18,7 +18,6 @@ const generateOTP = () => {
 };
 
 const signup = async (req, res) => {
-    
     try {
         const body = sanitizeInput(req.body);
         const { username, email, password } = body;
@@ -38,9 +37,11 @@ const signup = async (req, res) => {
             email,
             username,
             otp,
-            "http://localhost:3000/verify"
+            `${process.env.FRONTEND_URL}/verify`
         );
-        console.log(response);
+        if (!response) {
+            return res.status(500).json({ message: "Unable To Send Mail" });
+        }
         const token = jwt.sign(
             { email, username, password },
             process.env.JWT_SECRET_VERIFY,
