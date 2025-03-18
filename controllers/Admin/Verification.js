@@ -46,11 +46,7 @@ const Verify = async (req, res) => {
         const authToken = jwt.sign({ userId }, process.env.JWT_AUTH_SECRET, {});
 
         const sessionSecret = crypto.randomBytes(16).toString("hex");
-         await setValue(
-            `Admin:sesonKey${userId}`,
-            sessionSecret,
-            60 * 60
-        );
+        await setValue(`Admin:sesonKey${userId}`, sessionSecret, 60 * 60);
         const adminToken = jwt.sign(
             { userId, ss: sessionSecret },
             process.env.JWT_ADMIN_TOKEN_VERIFY,
@@ -65,7 +61,6 @@ const Verify = async (req, res) => {
             .cookie("AdminToken", adminToken, {
                 httpOnly: true,
                 secure: true,
-                sameSite: "strict",
             })
             .status(200)
             .json({ message: "successful login as admin" });
