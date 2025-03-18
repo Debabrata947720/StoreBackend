@@ -17,12 +17,10 @@ const sendPdf = async (req, res) => {
         if (selectedPdf.price !== 0) {
             return res.status(400).json({ message: "This PDF is not free" });
         }
-        // const response = await axios.get(selectedPdf.fileUrl, {
-        //     responseType: "arraybuffer", // Ensure binary format
-        // });
-        const pdfBytes = fs.readFileSync(
-            path.join(__dirname, "../../public/1.pdf")
-        );
+        const response = await axios.get(selectedPdf.fileUrl, {
+            responseType: "arraybuffer", // Ensure binary format
+        });
+        const pdfBytes = response.data
         const pdfDoc = await PDFDocument.load(pdfBytes);
         pdfDoc.setAuthor("ASIF");
         pdfDoc.setProducer("MD Asif Hossain");
