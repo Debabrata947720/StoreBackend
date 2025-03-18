@@ -46,7 +46,7 @@ const Login = async (req, res) => {
         );
         const Code = crypto.randomBytes(5).toString("hex").toUpperCase();
 
-        const r = await setValue(`Admin:OTP${user._id}`, Code, 60 * 60);
+        await setValue(`Admin:OTP${user._id}`, Code, 60 * 60);
 
         const response = await sendVerificationEmail(
             user.email,

@@ -22,7 +22,6 @@ const Verification = async (req, res) => {
         return res.status(400).json({ message: "Invalid OTP" });
     }
 
-    res.clearCookie("Verification");
 
     const Salt = await bcrypt.genSalt(10)
     const Pass =await bcrypt.hash(password, Salt);
